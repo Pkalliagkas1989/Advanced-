@@ -7,18 +7,20 @@ import (
 	"net/http"
 )
 
-type LikedPostsHandler struct {
+// ReactionPostsHandler returns posts that the user has reacted to (liked or
+// disliked).
+type ReactionPostsHandler struct {
 	PostRepo     *repository.PostRepository
 	CommentRepo  *repository.CommentRepository
 	ReactionRepo *repository.ReactionRepository
 	ImageRepo    *repository.ImageRepository
 }
 
-func NewLikedPostsHandler(postRepo *repository.PostRepository, commentRepo *repository.CommentRepository, reactionRepo *repository.ReactionRepository, imageRepo *repository.ImageRepository) *LikedPostsHandler {
-	return &LikedPostsHandler{PostRepo: postRepo, CommentRepo: commentRepo, ReactionRepo: reactionRepo, ImageRepo: imageRepo}
+func NewReactionPostsHandler(postRepo *repository.PostRepository, commentRepo *repository.CommentRepository, reactionRepo *repository.ReactionRepository, imageRepo *repository.ImageRepository) *ReactionPostsHandler {
+	return &ReactionPostsHandler{PostRepo: postRepo, CommentRepo: commentRepo, ReactionRepo: reactionRepo, ImageRepo: imageRepo}
 }
 
-func (h *LikedPostsHandler) GetLikedPosts(w http.ResponseWriter, r *http.Request) {
+func (h *ReactionPostsHandler) GetLikedPosts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		utils.ErrorResponse(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
