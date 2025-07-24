@@ -1,7 +1,6 @@
 const params = new URLSearchParams(window.location.search);
 const postId = params.get('id');
 const highlightId = params.get('highlight');
-const highlightPost = params.get('highlightPost') === '1';
 const lastReactions = new Map(); // key = `${type}:${id}`, value = 1 (like) or 2 (dislike)
 
 
@@ -257,10 +256,6 @@ function renderSinglePost(post) {
   // Create a boxed post container
   const postBox = document.createElement('div');
   postBox.className = 'post';
-  if (highlightPost) {
-    postBox.classList.add('highlight-post');
-    setTimeout(() => postBox.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0);
-  }
 
   postBox.appendChild(title);
   postBox.appendChild(meta);
