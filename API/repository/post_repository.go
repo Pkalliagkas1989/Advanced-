@@ -2,6 +2,8 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
 	"time"
 
 	"forum/models"
@@ -218,6 +220,28 @@ func (r *PostRepository) GetPostsReactedByUser(userID string) ([]models.PostWith
 		posts = append(posts, p)
 	}
 	return posts, nil
+}
+
+// Update modifies the title and/or content of a post owned by the given user
+func (r *PostRepository) Update(postID, userID string, title, content *string) error {
+	set := []string{}
+	args := []interface{}{}
+	if title != nil {
+		set = append(set, "title = ?")
+		args = append(args, *title)
+	}
+	if content != nil {
+		set = append(set, "content = ?")
+		args = append(args, *content)
+	}
+	if len(set) == 0 {
+		return nil
+	}
+	set = append(set, "updated_at = ?")
+	args = append(args, time.Now(), postID, userID)
+	query := fmt.Sprintf("UPDATE posts SET %s WHERE post_id = ? AND user_id = ?", strings.Join(set, ", "))
+	_, err := r.db.Exec(query, args...)
+	return err
 }
 
 // func (r *PostRepository) GetPostsReactedByUser(userID string) ([]models.PostWithUser, error) {

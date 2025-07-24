@@ -83,6 +83,7 @@ func SetupRoutes(db *sql.DB) http.Handler {
 
 	// Protected user routes
 	mux.Handle("/forum/api/posts/create", protected(http.HandlerFunc(postHandler.CreatePost)))
+	mux.Handle("/forum/api/posts/update", protected(http.HandlerFunc(postHandler.UpdatePost)))
 	mux.Handle("/forum/api/user/posts", protected(http.HandlerFunc(myPostsHandler.GetMyPosts)))
 	mux.Handle("/forum/api/user/reactions", protected(http.HandlerFunc(reactionPostsHandler.GetLikedPosts)))
 	mux.Handle("/forum/api/user/comments", protected(http.HandlerFunc(myCommentsHandler.GetMyComments)))
