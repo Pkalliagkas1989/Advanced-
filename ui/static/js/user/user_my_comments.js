@@ -31,7 +31,7 @@ function render(comments) {
     node.querySelector('.comment-content').textContent = c.content;
     node.querySelector('.comment-time').textContent = new Date(c.created_at).toLocaleString();
     const wrapper = document.createElement('a');
-    wrapper.href = `/user/post?id=${c.post_id}&highlight=${c.id}`;
+    wrapper.href = `/user/post?id=${c.post_id}&highlight=${c.id}&highlightPost=1`;
     wrapper.className = 'post-link';
     wrapper.appendChild(node);
     container.appendChild(wrapper);
