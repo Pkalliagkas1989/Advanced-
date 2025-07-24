@@ -48,28 +48,3 @@ func (r *CommentRepository) Create(comment models.Comment) (*models.Comment, err
 	}
 	return &comment, nil
 }
-
-// GetCommentsByUserWithPost returns all comments created by a specific user
-// along with the title of the post each comment belongs to.
-func (r *CommentRepository) GetCommentsByUserWithPost(userID string) ([]models.CommentWithPost, error) {
-	rows, err := r.db.Query(`
-        SELECT c.comment_id, c.post_id, p.title, c.content, c.created_at
-        FROM comments c
-        JOIN posts p ON c.post_id = p.post_id
-        WHERE c.user_id = ?
-        ORDER BY c.created_at DESC`, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var comments []models.CommentWithPost
-	for rows.Next() {
-		var c models.CommentWithPost
-		if err := rows.Scan(&c.ID, &c.PostID, &c.PostTitle, &c.Content, &c.CreatedAt); err != nil {
-			return nil, err
-		}
-		comments = append(comments, c)
-	}
-	return comments, nil
-}
