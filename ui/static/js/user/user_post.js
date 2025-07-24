@@ -1,5 +1,6 @@
 const params = new URLSearchParams(window.location.search);
 const postId = params.get('id');
+const highlightId = params.get('highlight');
 const lastReactions = new Map(); // key = `${type}:${id}`, value = 1 (like) or 2 (dislike)
 
 
@@ -243,7 +244,7 @@ function renderSinglePost(post) {
   // Comments list
   if (post.comments?.length > 0) {
     post.comments.forEach(comment => {
-      commentSection.appendChild(createCommentElement(comment));
+      commentSection.appendChild(createCommentElement(comment, highlightId));
     });
   } else {
     const noComments = document.createElement('p');
@@ -270,10 +271,15 @@ function renderSinglePost(post) {
 }
 
 // Helper: create comment element with reactions
-function createCommentElement(comment) {
+function createCommentElement(comment, highlight) {
   // Match guest style: compact, simple, but keep interactive buttons
   const commentEl = document.createElement('div');
   commentEl.className = 'comment';
+  commentEl.id = `comment-${comment.id}`;
+  if (highlight && comment.id === highlight) {
+    commentEl.classList.add('highlight-comment');
+    setTimeout(() => commentEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0);
+  }
 
   const commentUser = document.createElement('strong');
   commentUser.textContent = comment.username || comment.user_id || 'Anonymous';
