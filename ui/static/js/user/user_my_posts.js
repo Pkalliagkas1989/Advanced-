@@ -64,7 +64,7 @@ function renderCreatedPosts(posts) {
       .parentNode.appendChild(commentContainer);
 
     const wrapper = document.createElement('a');
-    wrapper.href = `/user/post?id=${post.id}`;
+    wrapper.href = `/user/edit_post?id=${post.id}`;
     wrapper.className = 'post-link';
     wrapper.appendChild(node);
 
