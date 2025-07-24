@@ -77,7 +77,7 @@ function renderPosts(posts) {
     node.querySelector('.post-content').textContent = p.content;
     node.querySelector('.post-time').textContent = new Date(p.created_at).toLocaleString();
     const wrapper = document.createElement('a');
-    wrapper.href = `/user/post?id=${p.id}`;
+    wrapper.href = `/user/edit_post?id=${p.id}`;
     wrapper.className = 'post-link';
     wrapper.appendChild(node);
     container.appendChild(wrapper);
