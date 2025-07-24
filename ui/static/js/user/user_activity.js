@@ -5,17 +5,27 @@ const commentTpl = document.getElementById('comment-template');
 const tabPosts = document.getElementById('tab-posts');
 const tabComments = document.getElementById('tab-comments');
 const tabReactions = document.getElementById('tab-reactions');
+const reactionsFilter = document.getElementById('reactions-filter');
+
+let reactionsCache = [];
 
 window.addEventListener('DOMContentLoaded', () => {
   tabPosts.addEventListener('click', loadPosts);
   tabComments.addEventListener('click', loadComments);
   tabReactions.addEventListener('click', loadReactions);
+  reactionsFilter.addEventListener('change', applyReactionFilter);
   loadPosts();
 });
 
 function setActive(btn) {
   [tabPosts, tabComments, tabReactions].forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+
+  if (btn === tabReactions) {
+    reactionsFilter.style.display = 'block';
+  } else {
+    reactionsFilter.style.display = 'none';
+  }
 }
 
 async function loadPosts() {
@@ -47,8 +57,8 @@ async function loadReactions() {
   try {
     const resp = await fetch('http://localhost:8080/forum/api/user/reactions', { credentials: 'include' });
     if (!resp.ok) throw new Error('failed');
-    const posts = await resp.json();
-    renderPosts(posts);
+    reactionsCache = await resp.json();
+    applyReactionFilter();
   } catch (e) {
     container.textContent = 'No reactions found.';
   }
@@ -91,4 +101,19 @@ function renderComments(comments) {
     wrapper.appendChild(node);
     container.appendChild(wrapper);
   });
+}
+
+function applyReactionFilter() {
+  if (!reactionsCache.length) {
+    container.textContent = 'No reactions found.';
+    return;
+  }
+  const value = document.querySelector('input[name="reactFilter"]:checked').value;
+  let filtered = reactionsCache;
+  if (value === 'liked') {
+    filtered = reactionsCache.filter(p => p.reactions.some(r => r.user_id && r.reaction_type === 1));
+  } else if (value === 'disliked') {
+    filtered = reactionsCache.filter(p => p.reactions.some(r => r.user_id && r.reaction_type === 2));
+  }
+  renderPosts(filtered);
 }
