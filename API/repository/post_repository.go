@@ -191,15 +191,16 @@ func (r *PostRepository) GetCategoriesByPostID(postID string) ([]models.Category
 // 	return posts, nil
 // }
 
+
 func (r *PostRepository) GetPostsReactedByUser(userID string) ([]models.PostWithUser, error) {
 	query := `
 		SELECT DISTINCT p.post_id, p.user_id, u.username, p.title, p.content, p.created_at
 		FROM posts p
 		JOIN user u ON p.user_id = u.user_id
-                WHERE p.post_id IN (
-                        SELECT post_id FROM reactions
-                        WHERE user_id = ? AND post_id IS NOT NULL
-                )
+		WHERE p.post_id IN (
+			SELECT post_id FROM reactions
+			WHERE user_id = ? AND reaction_type = 1 AND post_id IS NOT NULL
+		)
 		ORDER BY p.created_at DESC
 	`
 
